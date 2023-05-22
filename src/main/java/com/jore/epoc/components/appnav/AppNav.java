@@ -1,5 +1,7 @@
 package com.jore.epoc.components.appnav;
 
+import java.util.Optional;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
@@ -7,7 +9,6 @@ import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.dom.Element;
-import java.util.Optional;
 
 /**
  * A navigation menu with support for hierarchical and flat menus.
@@ -16,11 +17,11 @@ import java.util.Optional;
  * created by adding {@link AppNavItem} instances to other {@link AppNavItem}
  * instances.
  */
+@SuppressWarnings("serial")
 @JsModule("@vaadin-component-factory/vcf-nav")
 @Tag("vcf-nav")
 @NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
 public class AppNav extends Component implements HasSize, HasStyle {
-
     /**
      * Creates a new menu without any label.
      */
@@ -31,7 +32,7 @@ public class AppNav extends Component implements HasSize, HasStyle {
      * Creates a new menu with the given label.
      *
      * @param label
-     *            the label to use
+     *              the label to use
      */
     public AppNav(String label) {
         setLabel(label);
@@ -41,42 +42,13 @@ public class AppNav extends Component implements HasSize, HasStyle {
      * Adds menu item(s) to the menu.
      *
      * @param appNavItems
-     *            the menu item(s) to add
+     *                    the menu item(s) to add
      * @return the menu for chaining
      */
     public AppNav addItem(AppNavItem... appNavItems) {
         for (AppNavItem appNavItem : appNavItems) {
             getElement().appendChild(appNavItem.getElement());
         }
-
-        return this;
-    }
-
-    /**
-     * Removes the menu item from the menu.
-     * <p>
-     * If the given menu item is not a child of this menu, does nothing.
-     *
-     * @param appNavItem
-     *            the menu item to remove
-     * @return the menu for chaining
-     */
-    public AppNav removeItem(AppNavItem appNavItem) {
-        Optional<Component> parent = appNavItem.getParent();
-        if (parent.isPresent() && parent.get() == this) {
-            getElement().removeChild(appNavItem.getElement());
-        }
-
-        return this;
-    }
-
-    /**
-     * Removes all menu items from this item.
-     *
-     * @return this item for chaining
-     */
-    public AppNav removeAllItems() {
-        getElement().removeAllChildren();
         return this;
     }
 
@@ -90,13 +62,67 @@ public class AppNav extends Component implements HasSize, HasStyle {
     }
 
     /**
+     * Check if the end user is allowed to collapse/hide and expand/show the
+     * navigation items.
+     * <p>
+     * NOTE: The navigation has to have a label for it to be collapsible.
+     *
+     * @return true if the menu is collapsible, false otherwise
+     */
+    public boolean isCollapsible() {
+        return getElement().hasAttribute("collapsible");
+    }
+
+    /**
+     * Removes all menu items from this item.
+     *
+     * @return this item for chaining
+     */
+    public AppNav removeAllItems() {
+        getElement().removeAllChildren();
+        return this;
+    }
+
+    /**
+     * Removes the menu item from the menu.
+     * <p>
+     * If the given menu item is not a child of this menu, does nothing.
+     *
+     * @param appNavItem
+     *                   the menu item to remove
+     * @return the menu for chaining
+     */
+    public AppNav removeItem(AppNavItem appNavItem) {
+        Optional<Component> parent = appNavItem.getParent();
+        if (parent.isPresent() && parent.get() == this) {
+            getElement().removeChild(appNavItem.getElement());
+        }
+        return this;
+    }
+
+    /**
+     * Allow the end user to collapse/hide and expand/show the navigation items.
+     * <p>
+     * NOTE: The navigation has to have a label for it to be collapsible.
+     *
+     * @param collapsible
+     *                    true to make the whole navigation component collapsible, false
+     *                    otherwise
+     * @return this instance for chaining
+     */
+    public AppNav setCollapsible(boolean collapsible) {
+        getElement().setAttribute("collapsible", "");
+        return this;
+    }
+
+    /**
      * Set a textual label for the navigation.
      * <p>
      * This can help the end user to distinguish groups of navigation items. The
      * label is also available for screen reader users.
      *
      * @param label
-     *            the label to set
+     *              the label to set
      * @return this instance for chaining
      */
     public AppNav setLabel(String label) {
@@ -116,32 +142,4 @@ public class AppNav extends Component implements HasSize, HasStyle {
             return element;
         });
     }
-
-    /**
-     * Check if the end user is allowed to collapse/hide and expand/show the
-     * navigation items.
-     * <p>
-     * NOTE: The navigation has to have a label for it to be collapsible.
-     *
-     * @return true if the menu is collapsible, false otherwise
-     */
-    public boolean isCollapsible() {
-        return getElement().hasAttribute("collapsible");
-    }
-
-    /**
-     * Allow the end user to collapse/hide and expand/show the navigation items.
-     * <p>
-     * NOTE: The navigation has to have a label for it to be collapsible.
-     *
-     * @param collapsible
-     *            true to make the whole navigation component collapsible, false
-     *            otherwise
-     * @return this instance for chaining
-     */
-    public AppNav setCollapsible(boolean collapsible) {
-        getElement().setAttribute("collapsible", "");
-        return this;
-    }
-
 }

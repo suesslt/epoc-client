@@ -1,9 +1,8 @@
 package com.jore.epoc.security;
 
-import com.jore.epoc.data.entity.User;
-import com.jore.epoc.data.service.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,30 +10,28 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.jore.epoc.dto.UserDto;
+import com.jore.epoc.services.UserManagementService;
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+    private static List<GrantedAuthority> getAuthorities(UserDto user) {
+        return user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role)).collect(Collectors.toList());
+    }
 
-    private final UserRepository userRepository;
+    private final UserManagementService userService;
 
-    public UserDetailsServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserDetailsServiceImpl(UserManagementService userService) {
+        this.userService = userService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        UserDto user = userService.getByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("No user present with username: " + username);
         } else {
-            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getHashedPassword(),
-                    getAuthorities(user));
+            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthorities(user));
         }
     }
-
-    private static List<GrantedAuthority> getAuthorities(User user) {
-        return user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                .collect(Collectors.toList());
-
-    }
-
 }

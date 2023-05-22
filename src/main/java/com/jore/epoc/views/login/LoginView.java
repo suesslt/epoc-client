@@ -11,24 +11,22 @@ import com.vaadin.flow.router.internal.RouteUtil;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+@SuppressWarnings("serial")
 @AnonymousAllowed
 @PageTitle("Login")
 @Route(value = "login")
 public class LoginView extends LoginOverlay implements BeforeEnterObserver {
-
     private final AuthenticatedUser authenticatedUser;
 
     public LoginView(AuthenticatedUser authenticatedUser) {
         this.authenticatedUser = authenticatedUser;
         setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
-
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
         i18n.getHeader().setTitle("epoc");
         i18n.getHeader().setDescription("Login using user/user or admin/admin");
         i18n.setAdditionalInformation(null);
         setI18n(i18n);
-
         setForgotPasswordButtonVisible(false);
         setOpened(true);
     }
@@ -40,7 +38,6 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
             setOpened(false);
             event.forwardTo("");
         }
-
         setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
     }
 }
