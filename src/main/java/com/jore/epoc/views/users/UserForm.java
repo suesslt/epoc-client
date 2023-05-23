@@ -3,6 +3,7 @@ package com.jore.epoc.views.users;
 import com.jore.epoc.dto.UserDto;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -52,14 +53,17 @@ public class UserForm extends FormLayout {
     private final TextField email = new TextField("Email");
     private final TextField phone = new TextField("Phone");
     private final Checkbox isAdmin = new Checkbox("Is Administrator");
-    private final Button cancel = new Button("Cancel");
-    private final Button save = new Button("Save");
+    Button save = new Button("Save");
+    Button delete = new Button("Delete");
+    Button close = new Button("Cancel");
     private final BeanValidationBinder<UserDto> binder = new BeanValidationBinder<>(UserDto.class);
     private UserDto user;
 
     public UserForm() {
         addClassName("user-form");
-        buildComponent();
+        binder.bindInstanceFields(this);
+        binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
+        add(firstName, lastName, username, email, phone, isAdmin, createButtonsLayout());
     }
 
     @Override
@@ -72,45 +76,15 @@ public class UserForm extends FormLayout {
         binder.readBean(this.user);
     }
 
-    private void buildComponent() {
-        binder.bindInstanceFields(this);
-        add(firstName, lastName, username, email, phone, isAdmin);
-        cancel.addClickListener(event -> fireEvent(new CloseEvent(this)));
-        //        cancel.addClickListener(e -> {
-        //            clearForm();
-        //            //            refreshGrid();
-        //        });
+    private HorizontalLayout createButtonsLayout() {
+        close.addClickListener(event -> fireEvent(new CloseEvent(this)));
         save.addClickListener(event -> validateAndSave());
-        binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
-        //        save.addClickListener(e -> {
-        //            try {
-        //                if (this.user == null) {
-        //                    this.user = UserDto.builder().build();
-        //                }
-        //                binder.writeBean(this.user);
-        //                userService.saveUser(this.user);
-        //                clearForm();
-        //                //                refreshGrid();
-        //                Notification.show("Data updated");
-        //                UI.getCurrent().navigate(UsersView.class);
-        //            } catch (ObjectOptimisticLockingFailureException exception) {
-        //                Notification n = Notification.show("Error updating the data. Somebody else has updated the record while you were making changes.");
-        //                n.setPosition(Position.MIDDLE);
-        //                n.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        //            } catch (ValidationException validationException) {
-        //                Notification.show("Failed to update the data. Check again that all values are valid");
-        //            }
-        //        });
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setClassName("button-layout");
-        cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
-        add(buttonLayout);
-    }
-
-    private void clearForm() {
-        setUser(null);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        save.addClickShortcut(Key.ENTER);
+        close.addClickShortcut(Key.ESCAPE);
+        return new HorizontalLayout(save, delete, close);
     }
 
     private void validateAndSave() {
