@@ -7,6 +7,7 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -14,6 +15,9 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @SuppressWarnings("serial")
 public class UserForm extends FormLayout {
     public static class CloseEvent extends UserFormEvent {
@@ -50,9 +54,9 @@ public class UserForm extends FormLayout {
     private final TextField firstName = new TextField("First Name");
     private final TextField lastName = new TextField("Last Name");
     private final TextField username = new TextField("Username");
-    private final TextField email = new TextField("Email");
+    private final TextField email = new TextField("E-Mail");
     private final TextField phone = new TextField("Phone");
-    private final Checkbox isAdmin = new Checkbox("Is Administrator");
+    private final Checkbox administrator = new Checkbox("Administrator");
     Button save = new Button("Save");
     Button delete = new Button("Delete");
     Button close = new Button("Cancel");
@@ -63,7 +67,7 @@ public class UserForm extends FormLayout {
         addClassName("user-form");
         binder.bindInstanceFields(this);
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
-        add(firstName, lastName, username, email, phone, isAdmin, createButtonsLayout());
+        add(firstName, lastName, username, email, phone, administrator, createButtonsLayout());
     }
 
     @Override
@@ -76,14 +80,25 @@ public class UserForm extends FormLayout {
         binder.readBean(this.user);
     }
 
+    private void confirmDeletion() {
+        ConfirmDialog dialog = new ConfirmDialog();
+        dialog.setHeader("Delete User");
+        dialog.setText("Confirm if you want to delete user.");
+        dialog.setCancelable(true);
+        dialog.open();
+        dialog.addConfirmListener(event -> fireEvent(new DeleteEvent(this, user)));
+    }
+
     private HorizontalLayout createButtonsLayout() {
-        close.addClickListener(event -> fireEvent(new CloseEvent(this)));
         save.addClickListener(event -> validateAndSave());
+        delete.addClickListener(event -> confirmDeletion());
+        close.addClickListener(event -> fireEvent(new CloseEvent(this)));
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addClickShortcut(Key.ENTER);
         close.addClickShortcut(Key.ESCAPE);
+        binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
         return new HorizontalLayout(save, delete, close);
     }
 
@@ -92,7 +107,7 @@ public class UserForm extends FormLayout {
             binder.writeBean(user);
             fireEvent(new SaveEvent(this, user));
         } catch (ValidationException e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 }

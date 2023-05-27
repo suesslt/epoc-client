@@ -7,10 +7,10 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 import com.jore.epoc.components.appnav.AppNav;
 import com.jore.epoc.components.appnav.AppNavItem;
 import com.jore.epoc.dto.UserDto;
-import com.jore.epoc.security.AuthenticatedUser;
+import com.jore.epoc.services.CurrentUserService;
 import com.jore.epoc.views.about.AboutView;
 import com.jore.epoc.views.mysimulations.MySimulationsView;
-import com.jore.epoc.views.users.UsersView;
+import com.jore.epoc.views.users.UserView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -26,6 +26,7 @@ import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
+import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
@@ -34,12 +35,14 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 @SuppressWarnings("serial")
 public class MainLayout extends AppLayout {
     private H2 viewTitle;
-    private AuthenticatedUser authenticatedUser;
-    private AccessAnnotationChecker accessChecker;
+    private final AccessAnnotationChecker accessChecker;
+    private final CurrentUserService currentUserService;
+    private final AuthenticationContext authenticationContext;
 
-    public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
-        this.authenticatedUser = authenticatedUser;
+    public MainLayout(AccessAnnotationChecker accessChecker, CurrentUserService currentUserService, AuthenticationContext authenticationContext) {
         this.accessChecker = accessChecker;
+        this.currentUserService = currentUserService;
+        this.authenticationContext = authenticationContext;
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
@@ -63,7 +66,7 @@ public class MainLayout extends AppLayout {
 
     private Footer createFooter() {
         Footer layout = new Footer();
-        Optional<UserDto> maybeUser = authenticatedUser.get();
+        Optional<UserDto> maybeUser = currentUserService.getAuthenticatedUser();
         if (maybeUser.isPresent()) {
             UserDto user = maybeUser.get();
             Avatar avatar = new Avatar(user.getFirstName() + " " + user.getLastName());
@@ -83,7 +86,7 @@ public class MainLayout extends AppLayout {
             div.getElement().getStyle().set("gap", "var(--lumo-space-s)");
             userName.add(div);
             userName.getSubMenu().addItem("Sign out", e -> {
-                authenticatedUser.logout();
+                authenticationContext.logout();
             });
             layout.add(userMenu);
         } else {
@@ -96,17 +99,17 @@ public class MainLayout extends AppLayout {
     private AppNav createNavigation() {
         // AppNav is not yet an official component.
         // For documentation, visit https://github.com/vaadin/vcf-nav#readme
-        AppNav nav = new AppNav();
+        AppNav result = new AppNav();
         if (accessChecker.hasAccess(MySimulationsView.class)) {
-            nav.addItem(new AppNavItem("My Simulations", MySimulationsView.class, LineAwesomeIcon.LIST_SOLID.create()));
+            result.addItem(new AppNavItem("My Simulations", MySimulationsView.class, LineAwesomeIcon.LIST_SOLID.create()));
         }
-        if (accessChecker.hasAccess(UsersView.class)) {
-            nav.addItem(new AppNavItem("Users", UsersView.class, LineAwesomeIcon.COLUMNS_SOLID.create()));
+        if (accessChecker.hasAccess(UserView.class)) {
+            result.addItem(new AppNavItem("Users", UserView.class, LineAwesomeIcon.COLUMNS_SOLID.create()));
         }
         if (accessChecker.hasAccess(AboutView.class)) {
-            nav.addItem(new AppNavItem("About", AboutView.class, LineAwesomeIcon.FILE.create()));
+            result.addItem(new AppNavItem("About", AboutView.class, LineAwesomeIcon.FILE.create()));
         }
-        return nav;
+        return result;
     }
 
     private String getCurrentPageTitle() {

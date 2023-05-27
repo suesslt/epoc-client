@@ -1,6 +1,6 @@
 package com.jore.epoc.views.login;
 
-import com.jore.epoc.security.AuthenticatedUser;
+import com.jore.epoc.services.CurrentUserService;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -16,9 +16,9 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @PageTitle("Login")
 @Route(value = "login")
 public class LoginView extends LoginOverlay implements BeforeEnterObserver {
-    private final AuthenticatedUser authenticatedUser;
+    private final CurrentUserService authenticatedUser;
 
-    public LoginView(AuthenticatedUser authenticatedUser) {
+    public LoginView(CurrentUserService authenticatedUser) {
         this.authenticatedUser = authenticatedUser;
         setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
         LoginI18n i18n = LoginI18n.createDefault();
@@ -33,7 +33,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        if (authenticatedUser.get().isPresent()) {
+        if (authenticatedUser.getAuthenticatedUser().isPresent()) {
             // Already logged in
             setOpened(false);
             event.forwardTo("");

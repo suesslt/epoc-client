@@ -3,13 +3,15 @@ package com.jore.epoc.views.users;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jore.epoc.dto.UserDto;
-import com.jore.epoc.services.UserManagementService;
+import com.jore.epoc.services.UserService;
 import com.jore.epoc.views.MainLayout;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -25,17 +27,16 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed("ADMIN")
 @Uses(Icon.class)
 @CssImport("./styles/shared-styles.css")
-public class UsersView extends VerticalLayout {
+public class UserView extends VerticalLayout {
     private final Grid<UserDto> grid = new Grid<>(UserDto.class, false);
     private UserForm form;
-    private final UserManagementService userService;
+    private final UserService userService;
     private TextField filterText = new TextField();
 
-    public UsersView(@Autowired UserManagementService userService) {
+    public UserView(@Autowired UserService userService) {
         this.userService = userService;
         addClassName("user-view");
         setSizeFull();
-        configureFilter();
         configureGrid();
         form = new UserForm();
         form.addListener(UserForm.SaveEvent.class, this::saveContact);
@@ -44,7 +45,7 @@ public class UsersView extends VerticalLayout {
         Div content = new Div(grid, form);
         content.addClassName("content");
         content.setSizeFull();
-        add(filterText, content);
+        add(getToolbar(), content);
         updateList();
         closeEditor();
     }
@@ -65,17 +66,10 @@ public class UsersView extends VerticalLayout {
         removeClassName("editing");
     }
 
-    private void configureFilter() {
-        filterText.setPlaceholder("Filter by name...");
-        filterText.setClearButtonVisible(true);
-        filterText.setValueChangeMode(ValueChangeMode.LAZY);
-        filterText.addValueChangeListener(e -> updateList());
-    }
-
     private void configureGrid() {
         grid.addClassName("user-grid");
         grid.setSizeFull();
-        grid.setColumns("firstName", "lastName", "email", "phone", "username", "admin");
+        grid.setColumns("username", "email", "firstName", "lastName", "phone", "administrator");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event -> editContact(event.getValue()));
     }
@@ -86,6 +80,18 @@ public class UsersView extends VerticalLayout {
         closeEditor();
     }
 
+    private HorizontalLayout getToolbar() {
+        filterText.setPlaceholder("Filter...");
+        filterText.setClearButtonVisible(true);
+        filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        filterText.addValueChangeListener(e -> updateList());
+        Button addContactButton = new Button("Add user");
+        addContactButton.addClickListener(click -> addUser());
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, addContactButton);
+        toolbar.addClassName("toolbar");
+        return toolbar;
+    }
+
     private void saveContact(UserForm.SaveEvent event) {
         userService.saveUser(event.getUser());
         updateList();
@@ -94,5 +100,10 @@ public class UsersView extends VerticalLayout {
 
     private void updateList() {
         grid.setItems(userService.getAllFiltered(filterText.getValue()));
+    }
+
+    void addUser() {
+        grid.asSingleSelect().clear();
+        editContact(UserDto.builder().build());
     }
 }
