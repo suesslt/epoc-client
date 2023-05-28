@@ -72,6 +72,7 @@ public class UserView extends VerticalLayout {
         grid.setColumns("username", "email", "firstName", "lastName", "phone", "administrator");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event -> editContact(event.getValue()));
+        grid.setColumnReorderingAllowed(true);
     }
 
     private void deleteContact(UserForm.DeleteEvent event) {
@@ -100,6 +101,7 @@ public class UserView extends VerticalLayout {
 
     private void updateList() {
         grid.setItems(userService.getAllFiltered(filterText.getValue()));
+        grid.recalculateColumnWidths();
     }
 
     void addUser() {
