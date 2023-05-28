@@ -1,4 +1,4 @@
-package com.jore.epoc.views.mypersons;
+package com.jore.epoc.views.persons;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.jore.epoc.views.mypersons;
+package com.jore.epoc.views.persons;
 
 public class Person {
 

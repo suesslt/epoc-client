@@ -10,11 +10,12 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 
-@SuppressWarnings("serial")
 @PageTitle("About")
 @Route(value = "about", layout = MainLayout.class)
 @AnonymousAllowed
 public class AboutView extends VerticalLayout {
+    private static final long serialVersionUID = 6522642673342503951L;
+
     public AboutView() {
         setSpacing(false);
         Image img = new Image("images/empty-plant.png", "placeholder plant");
