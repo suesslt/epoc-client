@@ -9,8 +9,10 @@ import com.jore.epoc.components.appnav.AppNavItem;
 import com.jore.epoc.dto.UserDto;
 import com.jore.epoc.services.CurrentUserService;
 import com.jore.epoc.views.about.AboutView;
-import com.jore.epoc.views.mysimulations.MySimulationsView;
+import com.jore.epoc.views.mypersons.MyPersonsView;
+import com.jore.epoc.views.mysimulations.SimulationsView;
 import com.jore.epoc.views.users.UserView;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -25,6 +27,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility;
@@ -38,6 +41,7 @@ public class MainLayout extends AppLayout {
     private final AccessAnnotationChecker accessChecker;
     private final CurrentUserService currentUserService;
     private final AuthenticationContext authenticationContext;
+    private AppNav result = new AppNav();
 
     public MainLayout(AccessAnnotationChecker accessChecker, CurrentUserService currentUserService, AuthenticationContext authenticationContext) {
         this.accessChecker = accessChecker;
@@ -46,6 +50,15 @@ public class MainLayout extends AppLayout {
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
+    }
+
+    public void addView(Component userForm) {
+        //        if (accessChecker.hasAccess(userForm.getClass())) {
+        //        AppNavItem appNavItem = new AppNavItem("This Person", MyPersonsView.class, LineAwesomeIcon.PERSON_BOOTH_SOLID.create());
+        //        result.addItem(appNavItem);
+        //        }
+        RouterLink link = new RouterLink();
+        addToDrawer(link);
     }
 
     private void addDrawerContent() {
@@ -97,11 +110,11 @@ public class MainLayout extends AppLayout {
     }
 
     private AppNav createNavigation() {
-        // AppNav is not yet an official component.
-        // For documentation, visit https://github.com/vaadin/vcf-nav#readme
-        AppNav result = new AppNav();
-        if (accessChecker.hasAccess(MySimulationsView.class)) {
-            result.addItem(new AppNavItem("My Simulations", MySimulationsView.class, LineAwesomeIcon.LIST_SOLID.create()));
+        if (accessChecker.hasAccess(SimulationsView.class)) {
+            result.addItem(new AppNavItem("My Persons", MyPersonsView.class, LineAwesomeIcon.LIST_SOLID.create()));
+        }
+        if (accessChecker.hasAccess(SimulationsView.class)) {
+            result.addItem(new AppNavItem("My Simulations", SimulationsView.class, LineAwesomeIcon.LIST_SOLID.create()));
         }
         if (accessChecker.hasAccess(UserView.class)) {
             result.addItem(new AppNavItem("Users", UserView.class, LineAwesomeIcon.COLUMNS_SOLID.create()));

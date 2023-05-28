@@ -1,4 +1,4 @@
-package com.jore.epoc.views.mysimulations;
+package com.jore.epoc.views.mypersons;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,16 +17,15 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 
 import jakarta.annotation.security.RolesAllowed;
 
 @SuppressWarnings("serial")
-@PageTitle("My Simulations")
-@Route(value = "hello", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
+@PageTitle("My Persons")
+@Route(value = "persons", layout = MainLayout.class)
+//@RouteAlias(value = "", layout = MainLayout.class)
 @RolesAllowed("USER")
-public class MySimulationsView extends Div implements AfterNavigationObserver {
+public class MyPersonsView extends Div implements AfterNavigationObserver {
     private static Person createPerson(String image, String name, String date, String post, String likes, String comments, String shares) {
         Person p = new Person();
         p.setImage(image);
@@ -41,7 +40,7 @@ public class MySimulationsView extends Div implements AfterNavigationObserver {
 
     Grid<Person> grid = new Grid<>();
 
-    public MySimulationsView() {
+    public MyPersonsView() {
         addClassName("my-simulations-view");
         setSizeFull();
         grid.setHeight("100%");
