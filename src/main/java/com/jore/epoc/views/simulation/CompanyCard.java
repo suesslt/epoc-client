@@ -65,7 +65,7 @@ public class CompanyCard extends VerticalLayout {
     private CompanyDto company;
 
     public CompanyCard() {
-        emailCombobox.addSelectionListener(e -> selectionChanged(e.getValue()));
+        emailCombobox.addSelectionListener(e -> selectionChanged(e.getRemovedSelection()));
         setHeight("30em");
         setWidth("20em");
         addClassNames(LumoUtility.Border.ALL, LumoUtility.Background.CONTRAST_10, LumoUtility.BoxShadow.LARGE, LumoUtility.BorderRadius.LARGE);
@@ -116,7 +116,7 @@ public class CompanyCard extends VerticalLayout {
         fireEvent(new DeleteEvent(this, company));
     }
 
-    private void selectionChanged(Set<String> value) {
-        log.info(value);
+    private void selectionChanged(Set<String> removedItems) {
+        log.info(removedItems);
     }
 }
