@@ -3,7 +3,7 @@ package com.jore.epoc.views.simulations;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jore.epoc.dto.SimulationDto;
-import com.jore.epoc.services.CurrentUserService;
+import com.jore.epoc.services.UserAdminService;
 import com.jore.epoc.services.SimulationService;
 import com.jore.epoc.views.MainLayout;
 import com.jore.epoc.views.simulation.SimulationEditor;
@@ -24,9 +24,9 @@ import jakarta.annotation.security.RolesAllowed;
 public class SimulationsView extends Div {
     Grid<SimulationDto> grid = new Grid<>(SimulationDto.class, false);
     private final SimulationService simulationService;
-    private final CurrentUserService currentUserService;
+    private final UserAdminService currentUserService;
 
-    public SimulationsView(@Autowired SimulationService simulationService, @Autowired CurrentUserService currentUserService) {
+    public SimulationsView(@Autowired SimulationService simulationService, @Autowired UserAdminService currentUserService) {
         this.simulationService = simulationService;
         this.currentUserService = currentUserService;
         addClassName("my-simulations-view");

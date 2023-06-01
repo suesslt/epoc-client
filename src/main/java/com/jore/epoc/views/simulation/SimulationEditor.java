@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jore.epoc.dto.CompanyDto;
 import com.jore.epoc.dto.SimulationDto;
+import com.jore.epoc.services.UserAdminService;
 import com.jore.epoc.services.SimulationService;
 import com.jore.epoc.views.MainLayout;
 import com.vaadin.flow.component.Text;
@@ -20,7 +21,6 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.TabSheet;
-import com.vaadin.flow.component.textfield.Autocomplete;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -39,6 +39,8 @@ public class SimulationEditor extends VerticalLayout {
     private List<CompanyDto> companies = new ArrayList<>();
     private final SimulationService simulationService;
     private SimulationDto simulation;
+    @Autowired
+    private UserAdminService currentUserService;
 
     public SimulationEditor(@Autowired SimulationService simulationService) {
         this.simulationService = simulationService;
@@ -90,7 +92,6 @@ public class SimulationEditor extends VerticalLayout {
         dialog.getFooter().add(new HorizontalLayout(cancelButton, new Button("Save")));
         FormLayout form = new FormLayout();
         TextField nameField = new TextField("Name");
-        nameField.setAutocomplete(Autocomplete.NEW_PASSWORD);
         nameField.setValue(simulation.getName());
         form.add(nameField);
         YearMonthField startMonthField = new YearMonthField("Simulation Start Month");
@@ -111,7 +112,8 @@ public class SimulationEditor extends VerticalLayout {
         Span simulationStart = new Span("Simulation start: " + simulation.getStartMonth());
         Span simulationDuration = new Span("Simulation periods: " + simulation.getNrOfMonths() + " months.");
         Button editButton = new Button("Edit Simulation", click -> editSimulation());
-        simulationView.add(simulationName, simulationStart, simulationDuration, editButton);
+        Button sendEmailsButton = new Button("Send Invitation Mails", click -> sendInvitationMails());
+        simulationView.add(simulationName, simulationStart, simulationDuration, editButton, sendEmailsButton);
     }
 
     private void newCompany() {
@@ -128,5 +130,9 @@ public class SimulationEditor extends VerticalLayout {
             companyCardView.add(companyCard);
         }
         companyCardView.add(addCompanyButton);
+    }
+
+    private void sendInvitationMails() {
+        currentUserService.sendEmailsForNewUsers();
     }
 }

@@ -7,7 +7,7 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 import com.jore.epoc.components.appnav.AppNav;
 import com.jore.epoc.components.appnav.AppNavItem;
 import com.jore.epoc.dto.UserDto;
-import com.jore.epoc.services.CurrentUserService;
+import com.jore.epoc.services.UserAdminService;
 import com.jore.epoc.views.about.AboutView;
 import com.jore.epoc.views.persons.MyPersonsView;
 import com.jore.epoc.views.simulations.SimulationsView;
@@ -39,11 +39,11 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 public class MainLayout extends AppLayout {
     private H2 viewTitle;
     private final AccessAnnotationChecker accessChecker;
-    private final CurrentUserService currentUserService;
+    private final UserAdminService currentUserService;
     private final AuthenticationContext authenticationContext;
     private AppNav result = new AppNav();
 
-    public MainLayout(AccessAnnotationChecker accessChecker, CurrentUserService currentUserService, AuthenticationContext authenticationContext) {
+    public MainLayout(AccessAnnotationChecker accessChecker, UserAdminService currentUserService, AuthenticationContext authenticationContext) {
         this.accessChecker = accessChecker;
         this.currentUserService = currentUserService;
         this.authenticationContext = authenticationContext;
