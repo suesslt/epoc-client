@@ -75,8 +75,8 @@ public class UserForm extends FormLayout {
         return getEventBus().addListener(eventType, listener);
     }
 
-    public void setUser(UserDto value) {
-        this.user = value;
+    public void setUser(UserDto user) {
+        this.user = user;
         binder.readBean(this.user);
     }
 

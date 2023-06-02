@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.jore.epoc.dto.UserTokenDto;
 import com.jore.epoc.services.UserAdminService;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -91,12 +92,13 @@ public class SetPasswordView extends VerticalLayout implements BeforeEnterObserv
             if (validationResult.isValid()) {
                 currentUserService.setPassword(userToken.getUserId(), passwordEncoder.encode(passwordField.getValue()));
                 currentUserService.deleteUserToken(userToken.getUserTokenId());
+                removeAll();
+                add(new Text("Password successfully changed"));
             } else {
-                for (String msg : validator.getMessages(validationResult)) {
-                    System.out.println(msg);
-                }
+                // TODO Show Error message
             }
         } else {
+            // TODO Show Error message
         }
     }
 }

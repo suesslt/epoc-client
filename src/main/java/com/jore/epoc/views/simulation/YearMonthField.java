@@ -28,12 +28,12 @@ public class YearMonthField extends CustomField<YearMonth> {
 
     @Override
     protected YearMonth generateModelValue() {
-        return YearMonth.of(yearField.getValue(), monthField.getValue());
+        return (yearField.getValue() != null && monthField != null) ? YearMonth.of(yearField.getValue(), monthField.getValue()) : null;
     }
 
     @Override
     protected void setPresentationValue(YearMonth newPresentationValue) {
-        yearField.setValue(newPresentationValue.getYear());
-        monthField.setValue(newPresentationValue.getMonthValue());
+        yearField.setValue(newPresentationValue != null ? newPresentationValue.getYear() : null);
+        monthField.setValue(newPresentationValue != null ? newPresentationValue.getMonthValue() : null);
     }
 }

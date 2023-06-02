@@ -97,6 +97,8 @@ public class CompanyCard extends VerticalLayout {
     public void setCompany(CompanyDto companyDto) {
         this.company = companyDto;
         companyName.setValue(companyDto.getName());
+        emailAdresses = companyDto.getEmails();
+        updateView();
     }
 
     private void addUser() {
@@ -118,5 +120,11 @@ public class CompanyCard extends VerticalLayout {
 
     private void selectionChanged(Set<String> removedItems) {
         log.info(removedItems);
+    }
+
+    private void updateView() {
+        emailCombobox.clear();
+        emailCombobox.setItems(emailAdresses);
+        emailCombobox.select(emailAdresses);
     }
 }

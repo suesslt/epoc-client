@@ -50,7 +50,7 @@ public class UserView extends VerticalLayout {
         closeEditor();
     }
 
-    public void editContact(UserDto user) {
+    public void editUser(UserDto user) {
         if (user == null) {
             closeEditor();
         } else {
@@ -64,6 +64,7 @@ public class UserView extends VerticalLayout {
         form.setUser(null);
         form.setVisible(false);
         removeClassName("editing");
+        grid.deselectAll();
     }
 
     private void configureGrid() {
@@ -71,7 +72,7 @@ public class UserView extends VerticalLayout {
         grid.setSizeFull();
         grid.setColumns("username", "email", "firstName", "lastName", "phone", "administrator");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
-        grid.asSingleSelect().addValueChangeListener(event -> editContact(event.getValue()));
+        grid.asSingleSelect().addValueChangeListener(event -> editUser(event.getValue()));
         grid.setColumnReorderingAllowed(true);
     }
 
@@ -106,6 +107,6 @@ public class UserView extends VerticalLayout {
 
     void addUser() {
         grid.asSingleSelect().clear();
-        editContact(UserDto.builder().build());
+        editUser(UserDto.builder().build());
     }
 }
