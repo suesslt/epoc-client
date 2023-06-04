@@ -84,10 +84,10 @@ public class SimulationEditor extends VerticalLayout {
         addCompanyButton.setHeight("30em");
         addCompanyButton.setWidth("20em");
         addCompanyButton.addClassNames(LumoUtility.BorderRadius.LARGE);
-        companyCardView.setPadding(true);
+        companyCardView.setPadding(false);
     }
 
-    private void deleteCompany(CompanyCard.DeleteEvent event) {
+    private void deleteCompany(CompanyCard.DeleteCompanyEvent event) {
         simulationService.deleteCompany(event.getCompany());
         companies.remove(event.getCompany());
         updateEditor();
@@ -97,7 +97,7 @@ public class SimulationEditor extends VerticalLayout {
         simulationView.removeAll();
         simulationView.setPadding(false);
         if (simulation != null) {
-            Span simulationName = new Span("Simulation " + simulation.getName());
+            Span simulationName = new Span(simulation.getName());
             simulationName.addClassNames(LumoUtility.FontSize.XXLARGE);
             Span simulationStart = new Span("Simulation start: " + simulation.getStartMonth());
             Span simulationDuration = new Span("Simulation periods: " + simulation.getNrOfMonths() + " months.");
@@ -110,6 +110,10 @@ public class SimulationEditor extends VerticalLayout {
     private void newCompany() {
         companies.add(simulationService.saveCompany(CompanyDto.builder().simulationId(simulation.getId()).build()));
         updateEditor();
+    }
+
+    private void removeEmail(CompanyCard.RemoveEmailEvent event) {
+        simulationService.deleteCompanyUser(event.getCompanyUser());
     }
 
     private void saveSimulation(SimulationForm.SaveEvent event) {
@@ -128,8 +132,9 @@ public class SimulationEditor extends VerticalLayout {
         for (CompanyDto company : companies) {
             CompanyCard companyCard = new CompanyCard();
             companyCard.setCompany(company);
-            companyCard.addListener(CompanyCard.DeleteEvent.class, this::deleteCompany);
+            companyCard.addListener(CompanyCard.DeleteCompanyEvent.class, this::deleteCompany);
             companyCard.addListener(CompanyCard.AddEmailEvent.class, this::addEmail);
+            companyCard.addListener(CompanyCard.RemoveEmailEvent.class, this::removeEmail);
             companyCardView.add(companyCard);
         }
         companyCardView.add(addCompanyButton);

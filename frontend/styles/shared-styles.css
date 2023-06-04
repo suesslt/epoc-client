@@ -15,3 +15,9 @@
 		display: none;
     }
 }
+vaadin-button.email-button {
+   vaadin-button[theme~="icon"]
+}
+vaadin-button.email-button {
+  --lumo-primary-color: cyan;
+}
