@@ -144,7 +144,7 @@ public class CompanyView extends VerticalLayout implements HasUrlParameter<Long>
         HorizontalLayout result = new HorizontalLayout();
         Span orderType = new Span(order.getOrderType());
         result.add(orderType);
-        Span amount = new Span(order.getAmount());
+        Span amount = new Span(order.getAmount().toString());
         result.add(amount);
         return result;
     }
@@ -163,6 +163,7 @@ public class CompanyView extends VerticalLayout implements HasUrlParameter<Long>
         Grid<CompanyOrderDto> grid = new Grid<>();
         grid.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS);
         grid.addComponentColumn(order -> createCard(order));
+        grid.setItems(companyStep.getOrders());
         result.setPadding(false);
         result.add(grid);
         result.setHeight("20em");
