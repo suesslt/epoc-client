@@ -12,6 +12,7 @@ import com.jore.epoc.services.UserAdminService;
 import com.jore.epoc.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -44,7 +45,7 @@ public class SimulationEditor extends VerticalLayout {
         createCompanyCardView();
         form.addListener(SimulationForm.SaveEvent.class, this::saveSimulation);
         form.addListener(SimulationForm.CloseEvent.class, e -> closeEditor());
-        add(new VerticalLayout(new HorizontalLayout(simulationView, form), companyCardView));
+        add(new HorizontalLayout(new VerticalLayout(simulationView, companyCardView), form));
         closeEditor();
         updateEditor();
     }
@@ -97,8 +98,7 @@ public class SimulationEditor extends VerticalLayout {
         simulationView.removeAll();
         simulationView.setPadding(false);
         if (simulation != null) {
-            Span simulationName = new Span(simulation.getName());
-            simulationName.addClassNames(LumoUtility.FontSize.XXLARGE);
+            H1 simulationName = new H1(simulation.getName());
             Span simulationStart = new Span("Simulation start: " + simulation.getStartMonth());
             Span simulationDuration = new Span("Simulation periods: " + simulation.getNrOfMonths() + " months.");
             Button editButton = new Button("Edit Simulation", click -> editSimulation(simulation));

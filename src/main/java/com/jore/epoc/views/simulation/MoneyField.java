@@ -23,7 +23,7 @@ public class MoneyField extends CustomField<Money> {
 
     @Override
     protected Money generateModelValue() {
-        return (currencyField.getValue() != null && amountField != null) ? Money.of(currencyField.getValue(), amountField.getValue()) : null;
+        return (currencyField.getValue() != null && amountField.getValue() != null) ? Money.of(currencyField.getValue(), amountField.getValue()) : null;
     }
 
     @Override

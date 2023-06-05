@@ -17,6 +17,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
 @SuppressWarnings("serial")
 @SpringBootApplication
 @Theme(value = "epoc", variant = Lumo.DARK)
+//@PWA(shortName = "epoc", name = "epoc")
 public class EpocApplication implements AppShellConfigurator {
     public static void main(String[] args) {
         SpringApplication.run(EpocApplication.class, args);
