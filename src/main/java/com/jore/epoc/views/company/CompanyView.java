@@ -16,6 +16,7 @@ import com.jore.epoc.dto.MessageDto;
 import com.jore.epoc.services.SimulationService;
 import com.jore.epoc.views.MainLayout;
 import com.jore.epoc.views.simulation.MoneyField;
+import com.vaadin.componentfactory.pdfviewer.PdfViewer;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -40,6 +41,7 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -97,6 +99,11 @@ public class CompanyView extends VerticalLayout implements HasUrlParameter<Long>
         return result;
     }
 
+    private void buildStorage(OrderEvent event) {
+        simulationService.buildStorage(BuildStorageDto.builder().companyId(companyId).executionMonth(companyStep.getSimulationMonth()).capacity(event.getAmount()).build());
+        buildView();
+    }
+
     private void buildView() {
         companyStep = simulationService.getCurrentCompanySimulationStep(companyId).get();
         removeAll();
@@ -105,10 +112,17 @@ public class CompanyView extends VerticalLayout implements HasUrlParameter<Long>
         add(buildMessageList());
         //        add(new Text(companyStep.getMessages().toString()));
         add(new Text("Company value: " + companyStep.getCompanyValue()));
+        add(createPdfView());
+        add(createSalesChart());
         add(createFinanceView());
         add(createProcessView());
         add(createOrderView());
         add(new Button("Complete Step", click -> completeStep()));
+    }
+
+    private void buyRawMaterial(OrderEvent event) {
+        simulationService.buyRawMaterial(BuyRawMaterialDto.builder().companyId(companyId).executionMonth(companyStep.getSimulationMonth()).amount(event.getAmount()).build());
+        buildView();
     }
 
     private void completeStep() {
@@ -134,6 +148,7 @@ public class CompanyView extends VerticalLayout implements HasUrlParameter<Long>
                 } else {
                     simulationService.decreaseCreditLine(adjustCreditLine);
                 }
+                buildView();
             }
         });
         result.add(button);
@@ -170,14 +185,23 @@ public class CompanyView extends VerticalLayout implements HasUrlParameter<Long>
         return result;
     }
 
+    private Component createPdfView() {
+        PdfViewer pdfViewer = new PdfViewer();
+        pdfViewer.setSrc(new StreamResource("BalanceSheet.pdf", () -> getClass().getResourceAsStream("/reports/BalanceSheet.pdf")));
+        pdfViewer.setZoom("0.5");
+        pdfViewer.setHeight("40em");
+        pdfViewer.setWidth("30em");
+        return pdfViewer;
+    }
+
     private Component createProcessView() {
         HorizontalLayout result = new HorizontalLayout();
         result.setSpacing(false);
         RawMaterialView rawMaterialView = new RawMaterialView();
-        rawMaterialView.addListener(OrderEvent.class, event -> simulationService.buyRawMaterial(BuyRawMaterialDto.builder().companyId(companyId).executionMonth(companyStep.getSimulationMonth()).amount(event.getAmount()).build()));
+        rawMaterialView.addListener(OrderEvent.class, event -> buyRawMaterial(event));
         result.add(rawMaterialView);
         StorageRawView storageRawView = new StorageRawView();
-        storageRawView.addListener(OrderEvent.class, event -> simulationService.buildStorage(BuildStorageDto.builder().companyId(companyId).executionMonth(companyStep.getSimulationMonth()).capacity(event.getAmount()).build()));
+        storageRawView.addListener(OrderEvent.class, event -> buildStorage(event));
         result.add(storageRawView);
         result.add(new FactoryView());
         result.add(new StorageProductsView());
@@ -185,5 +209,10 @@ public class CompanyView extends VerticalLayout implements HasUrlParameter<Long>
         Scroller scroller = new Scroller(result);
         scroller.setScrollDirection(ScrollDirection.HORIZONTAL);
         return scroller;
+    }
+
+    private Component createSalesChart() {
+        SalesChart result = new SalesChart();
+        return result;
     }
 }

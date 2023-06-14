@@ -4,15 +4,12 @@ import java.util.Optional;
 
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
-import com.jore.epoc.components.appnav.AppNav;
-import com.jore.epoc.components.appnav.AppNavItem;
 import com.jore.epoc.dto.OpenUserSimulationDto;
 import com.jore.epoc.dto.UserDto;
 import com.jore.epoc.services.SimulationService;
 import com.jore.epoc.services.UserAdminService;
 import com.jore.epoc.views.about.AboutView;
 import com.jore.epoc.views.company.CompanyView;
-import com.jore.epoc.views.persons.MyPersonsView;
 import com.jore.epoc.views.simulations.SimulationsView;
 import com.jore.epoc.views.users.UserView;
 import com.vaadin.flow.component.Component;
@@ -106,23 +103,6 @@ public class MainLayout extends AppLayout {
             layout.add(loginLink);
         }
         return layout;
-    }
-
-    private AppNav createNavigation() {
-        AppNav result = new AppNav();
-        if (accessChecker.hasAccess(SimulationsView.class)) {
-            result.addItem(new AppNavItem("My Persons", MyPersonsView.class, LineAwesomeIcon.LIST_SOLID.create()));
-        }
-        if (accessChecker.hasAccess(SimulationsView.class)) {
-            result.addItem(new AppNavItem("My Simulations", SimulationsView.class, LineAwesomeIcon.LIST_SOLID.create()));
-        }
-        if (accessChecker.hasAccess(UserView.class)) {
-            result.addItem(new AppNavItem("Users", UserView.class, LineAwesomeIcon.COLUMNS_SOLID.create()));
-        }
-        if (accessChecker.hasAccess(AboutView.class)) {
-            result.addItem(new AppNavItem("About", AboutView.class, LineAwesomeIcon.FILE.create()));
-        }
-        return result;
     }
 
     private Component createNavigationWithRouters() {

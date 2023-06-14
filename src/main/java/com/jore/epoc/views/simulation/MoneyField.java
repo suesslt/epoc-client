@@ -4,6 +4,7 @@ import com.jore.datatypes.money.Money;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.BigDecimalField;
+import com.vaadin.flow.component.textfield.TextFieldVariant;
 
 @SuppressWarnings("serial")
 public class MoneyField extends CustomField<Money> {
@@ -13,6 +14,7 @@ public class MoneyField extends CustomField<Money> {
     public MoneyField() {
         currencyField = new CurrencyField();
         amountField = new BigDecimalField();
+        amountField.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
         add(currencyField, new Span(" "), amountField);
     }
 

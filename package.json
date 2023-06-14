@@ -4,6 +4,7 @@
   "dependencies": {
     "@polymer/polymer": "3.5.1",
     "@vaadin-component-factory/vcf-nav": "1.0.6",
+    "@vaadin-component-factory/vcf-pdf-viewer": "1.4.1",
     "@vaadin/accordion": "24.0.3",
     "@vaadin/app-layout": "24.0.3",
     "@vaadin/avatar": "24.0.3",
@@ -74,7 +75,9 @@
     "@vaadin/virtual-list": "24.0.3",
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
+    "echarts": "5.4.2",
     "lit": "2.6.1",
+    "print-js": "1.6.0",
     "proj4": "2.8.1"
   },
   "devDependencies": {
@@ -97,6 +100,7 @@
     "dependencies": {
       "@polymer/polymer": "3.5.1",
       "@vaadin-component-factory/vcf-nav": "1.0.6",
+      "@vaadin-component-factory/vcf-pdf-viewer": "1.4.1",
       "@vaadin/accordion": "24.0.3",
       "@vaadin/app-layout": "24.0.3",
       "@vaadin/avatar": "24.0.3",
@@ -167,7 +171,9 @@
       "@vaadin/virtual-list": "24.0.3",
       "construct-style-sheets-polyfill": "3.1.0",
       "date-fns": "2.29.3",
+      "echarts": "5.4.2",
       "lit": "2.6.1",
+      "print-js": "1.6.0",
       "proj4": "2.8.1"
     },
     "devDependencies": {
@@ -186,7 +192,7 @@
       "workbox-core": "6.5.4",
       "workbox-precaching": "6.5.4"
     },
-    "hash": "442edd095f024d2b4c5e73045bc9478d572c88f18a097c0c4c11dfe8eb163414"
+    "hash": "9e0d373d0379f6b6062d58fe8f1ea3a3aaa7819a888134d692447541365f244c"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -262,6 +268,9 @@
     "@vaadin-component-factory/vcf-nav": "$@vaadin-component-factory/vcf-nav",
     "proj4": "$proj4",
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
-    "date-fns": "$date-fns"
+    "date-fns": "$date-fns",
+    "@vaadin-component-factory/vcf-pdf-viewer": "$@vaadin-component-factory/vcf-pdf-viewer",
+    "print-js": "$print-js",
+    "echarts": "$echarts"
   }
 }
