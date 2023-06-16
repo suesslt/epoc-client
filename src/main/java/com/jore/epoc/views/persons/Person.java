@@ -1,7 +1,6 @@
 package com.jore.epoc.views.persons;
 
 public class Person {
-
     private String image;
     private String name;
     private String date;
