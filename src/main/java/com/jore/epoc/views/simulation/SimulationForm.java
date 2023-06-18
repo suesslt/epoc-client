@@ -1,11 +1,13 @@
 package com.jore.epoc.views.simulation;
 
+import com.jore.epoc.bo.SimulationType;
 import com.jore.epoc.dto.SimulationDto;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -53,10 +55,12 @@ public class SimulationForm extends FormLayout {
     private IntegerField nrOfMonths = new IntegerField("Nr of Months");
     private CurrencyField baseCurrency = new CurrencyField("Base Currency");
     private MoneyField costToBuildFactory = new MoneyField("Cost to Build Factory");
+    private ComboBox<SimulationType> simulationType = new ComboBox<>("Simulation Type");
 
     public SimulationForm() {
         addClassName("user-form");
-        add(name, startMonth, nrOfMonths, baseCurrency, costToBuildFactory, createButtonsLayout());
+        simulationType.setItems(SimulationType.values());
+        add(name, startMonth, nrOfMonths, baseCurrency, costToBuildFactory, simulationType, createButtonsLayout());
         setColspan(name, 3);
         binder.bindInstanceFields(this);
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
